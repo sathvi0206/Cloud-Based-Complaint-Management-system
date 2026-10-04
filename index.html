@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Complaint Management System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f3f6fb;
+            color: #222;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #4f46e5, #2563eb);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        }
+
+        header h1 {
+            font-size: 25px;
+        }
+
+        header p {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .cloud {
+            font-size: 40px;
+        }
+
+        /* Main */
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .card h2 {
+            font-size: 30px;
+            color: #2563eb;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Sections */
+        .section {
+            background: white;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .section h2 {
+            color: #1e3a8a;
+            margin-bottom: 20px;
+        }
+
+        /* Form */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: 1 / 3;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 7px;
+            color: #333;
+        }
+
+        input,
+        select,
+        textarea {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 4px rgba(37,99,235,0.3);
+        }
+
+        textarea {
+            height: 110px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            margin-top: 20px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 13px 25px;
+            border-radius: 7px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* Search */
+        .search-box {
+            width: 100%;
+            margin-bottom: 18px;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+            padding: 13px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        /* Status */
+        .status {
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .progress {
+            background: #cfe2ff;
+            color: #084298;
+        }
+
+        .resolved {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        /* Priority */
+        .high {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .medium {
+            color: #d97706;
+            font-weight: bold;
+        }
+
+        .low {
+            color: #16a34a;
+            font-weight: bold;
+        }
+
+        /* Buttons */
+        .action-btn {
+            border: none;
+            padding: 7px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 2px;
+        }
+
+        .view-btn {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        /* Footer */
+        footer {
+            background: #172554;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #16a34a;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 550px;
+            margin: 8% auto;
+            padding: 25px;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 12px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #555;
+        }
+
+        .modal-content h2 {
+            color: #2563eb;
+            margin-bottom: 15px;
+        }
+
+        .detail {
+            margin: 12px 0;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+
+        /* Responsive */
+        @media (max-width: 800px) {
+            .dashboard {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: 1;
+            }
+
+            header {
+                padding: 18px;
+            }
+
+            header h1 {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div>
+            <h1>☁️ Cloud Complaint Management System</h1>
+            <p>Submit, track and manage complaints easily</p>
+        </div>
+        <div class="cloud">☁️</div>
+    </header>
+
+
+    <div class="container">
+
+        <!-- Dashboard -->
+        <div class="dashboard">
+
+            <div class="card">
+                <h2 id="totalCount">0</h2>
+                <p>Total Complaints</p>
+            </div>
+
+            <div class="card">
+                <h2 id="pendingCount">0</h2>
+                <p>Pending</p>
+            </div>
+
+            <div class="card">
+                <h2 id="progressCount">0</h2>
+                <p>In Progress</p>
+            </div>
+
+            <div class="card">
+                <h2 id="resolvedCount">0</h2>
+                <p>Resolved</p>
+            </div>
+
+        </div>
+
+
+        <!-- Complaint Form -->
+        <div class="section">
+
+            <h2>📝 Submit a Complaint</h2>
+
+            <form id="complaintForm">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label>Student Name</label>
+                        <input
+                            type="text"
+                            id="studentName"
+                            placeholder="Enter your name"
+                            required
+                        >
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>Student ID</label>
+                        <input
+                            type="text"
+                            id="studentId"
+                            placeholder="Enter student ID"
+                            required
+                        >
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Enter email address"
+                            required
+                        >
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>Department</label>
+
+                        <select id="department" required>
+                            <option value="">Select Department</option>
+                            <option>CSE</option>
+                            <option>IT</option>
+                            <option>ECE</option>
+                            <option>EEE</option>
+                            <option>Mechanical</option>
+                            <option>Civil</option>
+                            <option>AI & ML</option>
+                            <option>Other</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>Complaint Category</label>
+
+                        <select id="category" required>
+                            <option value="">Select Category</option>
+                            <option>Academic</option>
+                            <option>Hostel</option>
+                            <option>Transport</option>
+                            <option>Library</option>
+                            <option>Infrastructure</option>
+                            <option>Food / Canteen</option>
+                            <option>Internet</option>
+                            <option>Other</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>Priority</label>
+
+                        <select id="priority" required>
+                            <option value="">Select Priority</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group full">
+                        <label>Complaint Subject</label>
+
+                        <input
+                            type="text"
+                            id="subject"
+                            placeholder="Enter complaint subject"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group full">
+
+                        <label>Complaint Description</label>
+
+                        <textarea
+                            id="description"
+                            placeholder="Describe your complaint..."
+                            required
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <button class="submit-btn" type="submit">
+                    🚀 Submit Complaint
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- Complaint List -->
+        <div class="section">
+
+            <h2>📋 Complaint Records</h2>
+
+            <input
+                class="search-box"
+                type="text"
+                id="searchInput"
+                placeholder="🔍 Search by complaint ID, student name, category or subject..."
+            >
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Complaint ID</th>
+                            <th>Student</th>
+                            <th>Category</th>
+                            <th>Subject</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="complaintTable">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        Complaint submitted successfully!
+    </div>
+
+
+    <!-- View Modal -->
+    <div class="modal" id="viewModal">
+
+        <div class="modal-content">
+
+            <span class="close" onclick="closeModal()">&times;</span>
+
+            <h2>Complaint Details</h2>
+
+            <div id="modalDetails"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <p>
+            ☁️ Cloud-Based Complaint Management System
+        </p>
+
+        <p>
+            © 2026 | College Mini Project
+        </p>
+
+    </footer>
+
+
+<script>
+
+    // Load complaints from browser storage
+    let complaints =
+        JSON.parse(localStorage.getItem("complaints")) || [];
+
+
+    // Form submit
+    document
+        .getElementById("complaintForm")
+        .addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+
+            const complaint = {
+
+                id: "CMP" + Date.now().toString().slice(-6),
+
+                studentName:
+                    document.getElementById("studentName").value,
+
+                studentId:
+                    document.getElementById("studentId").value,
+
+                email:
+                    document.getElementById("email").value,
+
+                department:
+                    document.getElementById("department").value,
+
+                category:
+                    document.getElementById("category").value,
+
+                priority:
+                    document.getElementById("priority").value,
+
+                subject:
+                    document.getElementById("subject").value,
+
+                description:
+                    document.getElementById("description").value,
+
+                status: "Pending",
+
+                date:
+                    new Date().toLocaleDateString("en-IN")
+
+            };
+
+
+            complaints.push(complaint);
+
+
+            // Save data
+            localStorage.setItem(
+                "complaints",
+                JSON.stringify(complaints)
+            );
+
+
+            // Reset form
+            this.reset();
+
+
+            // Refresh table
+            displayComplaints();
+
+
+            // Show notification
+            showNotification(
+                "Complaint submitted successfully! ID: " +
+                complaint.id
+            );
+
+        });
+
+
+    // Display complaints
+    function displayComplaints(search = "") {
+
+        const table =
+            document.getElementById("complaintTable");
+
+        table.innerHTML = "";
+
+
+        const filtered =
+            complaints.filter(function(c) {
+
+                return (
+
+                    c.id.toLowerCase().includes(search.toLowerCase()) ||
+
+                    c.studentName.toLowerCase().includes(search.toLowerCase()) ||
+
+                    c.category.toLowerCase().includes(search.toLowerCase()) ||
+
+                    c.subject.toLowerCase().includes(search.toLowerCase())
+
+                );
+
+            });
+
+
+        if (filtered.length === 0) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="8"
+                        style="text-align:center;padding:30px;">
+                        No complaints found.
+                    </td>
+                </tr>
+            `;
+
+            updateDashboard();
+
+            return;
+        }
+
+
+        filtered.forEach(function(c) {
+
+            const row =
+                document.createElement("tr");
+
+
+            let statusClass = "pending";
+
+            if (c.status === "In Progress") {
+                statusClass = "progress";
+            }
+
+            if (c.status === "Resolved") {
+                statusClass = "resolved";
+            }
+
+
+            let priorityClass =
+                c.priority.toLowerCase();
+
+
+            row.innerHTML = `
+
+                <td>
+                    <strong>${c.id}</strong>
+                </td>
+
+                <td>
+                    ${c.studentName}
+                </td>
+
+                <td>
+                    ${c.category}
+                </td>
+
+                <td>
+                    ${c.subject}
+                </td>
+
+                <td>
+                    <span class="${priorityClass}">
+                        ${c.priority}
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status ${statusClass}">
+                        ${c.status}
+                    </span>
+                </td>
+
+                <td>
+                    ${c.date}
+                </td>
+
+                <td>
+
+                    <button
+                        class="action-btn view-btn"
+                        onclick="viewComplaint('${c.id}')">
+                        View
+                    </button>
+
+                    <button
+                        class="action-btn delete-btn"
+                        onclick="deleteComplaint('${c.id}')">
+                        Delete
+                    </button>
+
+                </td>
+            `;
+
+
+            table.appendChild(row);
+
+        });
+
+
+        updateDashboard();
+
+    }
+
+
+    // Dashboard statistics
+    function updateDashboard() {
+
+        document.getElementById("totalCount").textContent =
+            complaints.length;
+
+
+        document.getElementById("pendingCount").textContent =
+            complaints.filter(
+                c => c.status === "Pending"
+            ).length;
+
+
+        document.getElementById("progressCount").textContent =
+            complaints.filter(
+                c => c.status === "In Progress"
+            ).length;
+
+
+        document.getElementById("resolvedCount").textContent =
+            complaints.filter(
+                c => c.status === "Resolved"
+            ).length;
+
+    }
+
+
+    // Search
+    document
+        .getElementById("searchInput")
+        .addEventListener("input", function() {
+
+            displayComplaints(this.value);
+
+        });
+
+
+    // View complaint
+    function viewComplaint(id) {
+
+        const complaint =
+            complaints.find(c => c.id === id);
+
+
+        if (!complaint) return;
+
+
+        document.getElementById("modalDetails").innerHTML = `
+
+            <div class="detail">
+                <strong>Complaint ID:</strong>
+                ${complaint.id}
+            </div>
+
+            <div class="detail">
+                <strong>Student Name:</strong>
+                ${complaint.studentName}
+            </div>
+
+            <div class="detail">
+                <strong>Student ID:</strong>
+                ${complaint.studentId}
+            </div>
+
+            <div class="detail">
+                <strong>Email:</strong>
+                ${complaint.email}
+            </div>
+
+            <div class="detail">
+                <strong>Department:</strong>
+                ${complaint.department}
+            </div>
+
+            <div class="detail">
+                <strong>Category:</strong>
+                ${complaint.category}
+            </div>
+
+            <div class="detail">
+                <strong>Priority:</strong>
+                ${complaint.priority}
+            </div>
+
+            <div class="detail">
+                <strong>Subject:</strong>
+                ${complaint.subject}
+            </div>
+
+            <div class="detail">
+                <strong>Description:</strong>
+                ${complaint.description}
+            </div>
+
+            <div class="detail">
+                <strong>Status:</strong>
+                ${complaint.status}
+            </div>
+
+            <div class="detail">
+                <strong>Date:</strong>
+                ${complaint.date}
+            </div>
+
+        `;
+
+
+        document.getElementById("viewModal").style.display =
+            "block";
+
+    }
+
+
+    // Close modal
+    function closeModal() {
+
+        document.getElementById("viewModal").style.display =
+            "none";
+
+    }
+
+
+    // Delete complaint
+    function deleteComplaint(id) {
+
+        const confirmDelete =
+            confirm(
+                "Are you sure you want to delete this complaint?"
+            );
+
+
+        if (!confirmDelete) return;
+
+
+        complaints =
+            complaints.filter(
+                c => c.id !== id
+            );
+
+
+        localStorage.setItem(
+            "complaints",
+            JSON.stringify(complaints)
+        );
+
+
+        displayComplaints();
+
+
+        showNotification(
+            "Complaint deleted successfully!"
+        );
+
+    }
+
+
+    // Notification
+    function showNotification(message) {
+
+        const notification =
+            document.getElementById("notification");
+
+
+        notification.textContent =
+            message;
+
+
+        notification.style.display =
+            "block";
+
+
+        setTimeout(function() {
+
+            notification.style.display =
+                "none";
+
+        }, 3000);
+
+    }
+
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+
+        const modal =
+            document.getElementById("viewModal");
+
+
+        if (event.target === modal) {
+
+            modal.style.display =
+                "none";
+
+        }
+
+    };
+
+
+    // Initial display
+    displayComplaints();
+
+</script>
+
+</body>
+</html>
